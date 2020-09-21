@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+  <title>Adonis Auth - Dashboard</title>
+</head>
+<body style="background: #edf2f7">
+
+<div class="container-fluid" style="margin-top: 50px">
+  <div class="row">
+
+    <div class="col-md-3">
+      <ul class="list-group">
+        <li class="list-group-item active">MAIN MENU</li>
+        <a href="{{ route('dashboard') }}" class="list-group-item" style="color: #212529;"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
+        <li class="list-group-item"><i class="fa fa-user-circle"></i> My Profile</li>
+        <a href="{{ route('logout') }}" class="list-group-item" style="color: #212529;"><i class="fa fa-sign-out-alt"></i> Logout</a>
+      </ul>
+    </div>
+
+    <div class="col-md-9">
+      <div class="card mb-5">
+        <div class="card-body">
+          <label>DASBOARD</label>
+          <hr>
+          Selamat Datang <strong>{{ user.name }}</strong>
+        </div>
+      </div>
+      
+      @if(flashMessage('notification'))
+      <div class="alert alert-success">{{ flashMessage('notification') }}</div>
+      @endif
+      <div class="card-body px-0">
+        
+      <button type="button" data-toggle="modal" data-target="#addModal" class="btn btn-success">Add</button>
+      </div>
+      <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form action="{{ route('dashboard.store') }}" method="POST">
+            <div class="modal-body">
+            {{ csrfField() }}
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Title:</label>
+                  <input type="text" name="title" class="form-control {{ hasErrorFor('title') ? 'is-invalid' : '' }}" id="recipient-title"/>
+                  {{ elIf('<span class="text-danger">$self</span>', getErrorFor('title'), hasErrorFor('title')) }}
+                </div>
+                <div class="form-group">
+                  <label for="message-text" class="col-form-label">Content:</label>
+                  <textarea type="text" name="content" class="form-control {{ hasErrorFor('content') ? 'is-invalid' : '' }}" id="recipient-content"></textarea>
+                  {{ elIf('<span class="text-danger">$self</span>', getErrorFor('content'), hasErrorFor('content')) }}
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-success">Add</button>
+            </div>
+          </form>
+          </div>
+        </div>
+      </div>
+      @each(post in posts)
+      <div href="#" class="list-group list-group-horizontal list-group-item-action mb-3">
+      <a href="#" class="list-group-item list-group-item-action" data-id="{{post.id}}" data-title="{{post.title}}" data-content="{{post.content}}" data-toggle="modal" data-target="#my-modal">{{post.title}}</a>
+      <li class="list-group-item">:</li>
+      <div class="modal fade" id="my-modal" tabindex="-1" role="dialog" aria-labelledby="my-modal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form method="POST">
+            <div class="modal-body">
+            {{ csrfField() }}
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Title:</label>
+                  <input type="text" name="title" class="form-control" id="recipient-title"/>
+                </div>
+                <div class="form-group">
+                  <label for="message-text" class="col-form-label">Content:</label>
+                  <textarea type="text" name="content" class="form-control" id="recipient-content"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Update</button>
+            <a type="button" class="btn btn-danger">Delete</a>
+            </div>
+          </form>
+          </div>
+        </div>
+      </div>
+</div>
+      @endeach
+    </div>
+
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+<script>
+  $('#my-modal').on('show.bs.modal', function (event) {
+  var myname = $(event.relatedTarget).data('title');
+  $(this).find(".modal-title").text(myname);
+  $(this).find("#recipient-title").val(myname);
+  var myemail = $(event.relatedTarget).data('content');
+  $(this).find("#recipient-content").val(myemail);
+  var myid = $(event.relatedTarget).data('id');
+  $(this).find("#addModal form").attr("action","/dashboard/update/"+myid);
+  $(this).find(".btn.btn-danger").attr("href","/dashboard/delete/"+myid);
+});
+</script>
+</body>
+</html>
