@@ -1,5 +1,5 @@
 'use strict'
-
+const User = use('App/Models/User');
 class LoginController {
 
   index({ view }) {
@@ -16,9 +16,25 @@ class LoginController {
     /**
      * attemp auth
      */
-    await auth.attempt(email, password)
+     const token = await auth.attempt(email, password)
+    try {
+      if (token) {
+        let user = await User.findBy('email', email)
+        // let token = await auth.generate(user)
 
-    return response.route('dashboard')
+        // Object.assign(user, token)
+        console.log(token)
+        return response.json(token)
+      }
+
+
+    }
+    catch (e) {
+      console.log(e)
+      return response.json({message: 'You are not registered!'})
+    }
+    // await auth.attempt(email, password)
+    // return response.route('dashboard')
 
   }
 
@@ -26,6 +42,15 @@ class LoginController {
     await auth.logout()
     return response.route('login.index')
   }
+  
+    async show ({ params, response }) {
+        const user = await User.find(params.id)
+        const res = {
+            name: user.name,
+            email: user.email
+        }
+        return response.json(res)
+    }
 
 }
 

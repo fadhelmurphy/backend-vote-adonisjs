@@ -34,8 +34,27 @@ Route.get('logout', 'Otentik/LoginController.logout').as('logout').middleware(['
 * dashboard
 */
 Route.group(()=>{
-    Route.get('dashboard', 'DashboardController.index').as('dashboard')
-    Route.post('dashboard/update/:id', 'DashboardController.update')
-    Route.get('dashboard/delete/:id', 'DashboardController.delete')
-    Route.post('dashboard/add', 'DashboardController.store').as('dashboard.store')
-}).middleware(['Authenticate'])
+    Route.get('/', 'DashboardController.index').as('dashboard'),
+    Route.post('update/:id', 'DashboardController.update').as('dashboard.update'),
+    Route.post('sendvote', 'DashboardController.sendvote').as('dashboard.sendvote'),
+    Route.get('delete/:id', 'DashboardController.delete'),
+    Route.get('get/:id', 'DashboardController.getbyid'),
+    Route.get('vote/add', 'DashboardController.addvote'),
+    Route.post('add', 'DashboardController.store').as('dashboard.store')
+}).prefix('dashboard').middleware(['Authenticate'])
+Route.group(()=>{
+    Route.get('/', 'DashboardController.getAll').as('dashboard')
+    Route.post('update', 'DashboardController.update').as('dashboard.update')
+    Route.post('sendvote', 'DashboardController.sendvote').as('dashboard.sendvote')
+    Route.get('delete/:id', 'DashboardController.delete')
+    Route.get('get/:id', 'DashboardController.getbyid')
+    Route.post('add', 'DashboardController.addvote')
+    // Route.get('login', 'Otentik/LoginController.index')
+    // .middleware(['RedirectIfAuthenticated'])
+    Route.post('login', 'Otentik/LoginController.check')
+    Route.get('getuser/:id', 'Otentik/LoginController.show')
+    // .middleware(['RedirectIfAuthenticated'])
+    Route.get('logout', 'Otentik/LoginController.logout').as('logout')
+    // .middleware(['Authenticate'])
+}).prefix('v1/api')
+// .middleware(['Authenticate'])

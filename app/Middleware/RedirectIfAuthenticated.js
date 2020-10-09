@@ -14,7 +14,8 @@ class RedirectIfAuthenticated {
     try {
       await auth.check()
       console.log(auth.user.id)
-      return response.route('dashboard')
+      return response.json({auth})
+      // return response.route('dashboard')
     } catch (error) {
       await next()
     }

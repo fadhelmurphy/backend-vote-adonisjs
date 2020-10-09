@@ -29,3 +29,10 @@ Factory.blueprint('App/Models/Post', async (faker) => {
     content: faker.paragraph()
   }
 })
+Factory.blueprint('App/Models/Vote', async (faker) => {
+  return {
+    id_vote: faker.integer(),
+    votename: faker.sentence(),
+    kandidat: faker.username()
+  }
+})

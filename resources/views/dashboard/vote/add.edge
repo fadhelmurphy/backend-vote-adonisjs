@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript">
+      const [inputList, setInputList] = [{ firstName: "", lastName: "" }];
+ 
+ // handle input change
+ const handleInputChange = (e, index) => {
+   const { name, value } = e.target;
+   const list = [...inputList];
+   list[index][name] = value;
+   setInputList(list);
+ }
+        currentg1 = 2; // This is input files added by default.
+        maxg1 = 5;
+        ming1 = 1;
+        
+        function g1_app_child(){
+            if(currentg1<maxg1)
+            {
+                var div = document.createElement("div");
+                div.id = 'divfiles'+currentg1;
+                /*div.style.width = "100px";
+                div.style.height = "100px";
+                div.style.background = "red";
+                div.style.color = "white";*/
+                div.innerHTML = '<input type="text" name="text['+currentg1+']" id="text'+currentg1+'" value="" />';
+                document.getElementById('outer_div').appendChild(div);
+                currentg1++;
+                return false;
+            }
+            else
+            {
+                alert('Maximum '+maxg1+' Files are Allowed.');
+                return false;
+            }
+        }
+        
+        function g1_delchild()
+        {
+            if(currentg1>ming1)
+            {
+                cnt = currentg1-1;
+                element = document.getElementById('divfiles'+cnt);
+                element.parentNode.removeChild(element);
+                currentg1--;
+                return false;
+            }
+            else
+            {
+                alert('Minimum '+ming1+' Files are Allowed.');
+                return false;
+            }
+        }
+        $(function () {
+        var values = $("#outer_div").children().val()
+        if (values != null) {
+            // $("#TextBoxContainer").html("");
+            // $(values).each(function () {
+            //     $("#TextBoxContainer").append(GetDynamicTextBox(this));
+            // });
+            console.log(values)
+        }
+    });
+        </script>
+        </head>
+        
+        <body>
+        <a href="javascript:void();" onclick="g1_app_child()">Add more input field(s)</a><br>
+        <a href="javascript:void();" onclick="g1_delchild()">Remove field(s)</a><br>
+        
+        <div id="outer_div">
+            <div id="divfiles0"><input type="text" name="text[0]" id="text0" value="" /></div>
+            <div id="divfiles1"><input type="text" name="text[1]" id="text1" value="" /></div>
+        </div>
+</body>
+</html>
