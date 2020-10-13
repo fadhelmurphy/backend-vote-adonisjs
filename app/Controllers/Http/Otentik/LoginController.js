@@ -43,8 +43,10 @@ class LoginController {
     return response.route('login.index')
   }
   
-    async show ({ params, response }) {
-        const user = await User.find(params.id)
+    async show ({ auth,params, response }) {
+      const userid = await auth.user.id;
+      console.log(user)
+        const user = await User.find(userid)
         const res = {
             name: user.name,
             email: user.email

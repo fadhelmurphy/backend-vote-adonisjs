@@ -5,7 +5,7 @@ const Post = use("App/Models/Post");
 const Vote = use("App/Models/Vote");
 const UsersVoted = use("App/Models/UsersVoted");
 const { validate } = use("Validator");
-const {nanoid} = use('nanoid')
+const { nanoid } = use("nanoid");
 
 class DashboardController {
   async index({ view, auth }) {
@@ -23,11 +23,15 @@ class DashboardController {
       if (!(name in lookup) && !(vote in lookup)) {
         lookup[name] = 1;
         lookup[vote] = 1;
-        result.push({ id_vote:vote, name });
+        result.push({ id_vote: vote, name });
       }
     }
     const posts = await Post.all();
-    return view.render("dashboard", { user: user, posts: posts.toJSON(),votes:result });
+    return view.render("dashboard", {
+      user: user,
+      posts: posts.toJSON(),
+      votes: result,
+    });
   }
   async getAll({ response, auth }) {
     // const user = await auth.user.toJSON();
@@ -44,60 +48,62 @@ class DashboardController {
       if (!(name in lookup) && !(vote in lookup)) {
         lookup[name] = 1;
         lookup[vote] = 1;
-        result.push({ id_vote:vote, name });
+        result.push({ id_vote: vote, name });
       }
     }
     console.log(result);
-    return response.json({ votes:result });
+    return response.json({ votes: result });
   }
 
   async addvote({ request }) {
-    const req = request.all()
-    const id = nanoid(6)
-    const results = await Vote.find(id)
-    if(results==null)
-    await Promise.all(req.data.map(async (element) => {
-      try {
-      
-        var vote = new Vote();
-        vote.id_vote = id
-        vote.votename = req.votename
-        vote.kandidat = element.kandidat
-        await vote.save()
-      } catch (error) {
-        console.log(error)
-      }
-    }));
+    const req = request.all();
+    const id = nanoid(6);
+    const results = await Vote.find(id);
+    if (results == null)
+      await Promise.all(
+        req.data.map(async (element) => {
+          try {
+            var vote = new Vote();
+            vote.id_vote = id;
+            vote.votename = req.votename;
+            vote.kandidat = element.kandidat;
+            await vote.save();
+          } catch (error) {
+            console.log(error);
+          }
+        })
+      );
   }
 
-  async update({ request, response, }) {
-    const req = request.all().Vote
-    console.log(req)
-    await Promise.all(req.map(async (element) => {
-      try {
-        
-      if(element.action=='tambah'){
-        var vote = new Vote();
-        vote.id_vote = element.id_vote
-        vote.votename = element.votename
-        vote.kandidat = element.kandidat
-        await vote.save()
-      }else if (element.action=='ubah') {
-        
-        await Vote
-        .query()
-        .where('id', element.id)
-        .update({ votename: element.votename,kandidat:element.kandidat })
-      }
-      else{
-    var id = element.id;
-    var vote = await Vote.find(id);
-    await vote.delete();
+  async update({ request, response }) {
+    const req = request.all().Vote;
+    console.log(req);
+    await Promise.all(
+      req.map(async (element) => {
+        try {
+          if (element.action == "tambah") {
+            var vote = new Vote();
+            vote.id_vote = element.id_vote;
+            vote.votename = element.votename;
+            vote.kandidat = element.kandidat;
+            await vote.save();
+          } else if (element.action == "ubah") {
+            await Vote.query()
+              .where("id", element.id)
+              .update({
+                votename: element.votename,
+                kandidat: element.kandidat,
+              });
+          } else {
+            var id = element.id;
+            var vote = await Vote.find(id);
+            await vote.delete();
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error)
-      }
-    }));
+      })
+    );
 
     // return response.route("dashboard");
   }
@@ -107,7 +113,7 @@ class DashboardController {
 
     var vote = await Vote.query()
       .where("id_vote", id)
-      .select("id","id_vote","votename", "kandidat")
+      .select("id", "id_vote", "votename", "kandidat")
       .fetch();
     vote = vote.toJSON();
 
@@ -129,19 +135,16 @@ class DashboardController {
       // return response.redirect('back')
     } catch (error) {
       console.log(error);
-      return response.route("dashboard");
+      // return response.route("dashboard");
     }
   }
 
   async delete({ request, response, view, params }) {
-
     const id = params.id;
-    console.log(id)
-    await Vote.query()
-      .where("id_vote", id)
-      .delete();
+    console.log(id);
+    await Vote.query().where("id_vote", id).delete();
 
-    return response.route("dashboard");
+    // return response.route("dashboard");
   }
 
   async store({ request, response, view, session }) {
@@ -185,7 +188,7 @@ class DashboardController {
       return response.redirect("back");
     } catch (error) {
       console.log(error);
-      return response.route("dashboard");
+      // return response.route("dashboard");
     }
   }
 }
