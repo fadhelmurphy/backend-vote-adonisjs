@@ -37,6 +37,9 @@ class DashboardController {
     // const user = await auth.user.toJSON();
     // const vote = await Vote.query().where('id_vote', '886817').select('votename','kandidat').fetch();
     // console.log(vote.toJSON()[1].kandidat)
+    
+    const user = await auth.getUser()
+    console.log(user.email)
     var lookup = {};
     var items = await Vote.all();
     var items = items.toJSON();
@@ -44,10 +47,12 @@ class DashboardController {
     for (var item, i = 0; (item = items[i++]); ) {
       var name = item.votename;
       var vote = item.id_vote;
+      var creator = item.creator;
 
-      if (!(name in lookup) && !(vote in lookup)) {
+      if (!(name in lookup) && !(vote in lookup) && !(creator in lookup) && creator == user.email) {
         lookup[name] = 1;
         lookup[vote] = 1;
+        lookup[creator] = 1;
         result.push({ id_vote: vote, name });
       }
     }
@@ -55,7 +60,8 @@ class DashboardController {
     return response.json({ votes: result });
   }
 
-  async addvote({ request }) {
+  async addvote({ auth,request }) {
+    const user = await auth.getUser()
     const req = request.all();
     const id = nanoid(6);
     const results = await Vote.find(id);
@@ -65,6 +71,7 @@ class DashboardController {
           try {
             var vote = new Vote();
             vote.id_vote = id;
+            vote.creator = user.email
             vote.votename = req.votename;
             vote.kandidat = element.kandidat;
             await vote.save();
@@ -75,7 +82,8 @@ class DashboardController {
       );
   }
 
-  async update({ request, response }) {
+  async update({ auth, request, response }) {
+    const user = await auth.getUser()
     const req = request.all().Vote;
     console.log(req);
     await Promise.all(
@@ -84,6 +92,7 @@ class DashboardController {
           if (element.action == "tambah") {
             var vote = new Vote();
             vote.id_vote = element.id_vote;
+            vote.creator = user.email
             vote.votename = element.votename;
             vote.kandidat = element.kandidat;
             await vote.save();
@@ -97,7 +106,10 @@ class DashboardController {
           } else {
             var id = element.id;
             var vote = await Vote.find(id);
+            if (vote.creator == user.email) {
             await vote.delete();
+            }
+              
           }
         } catch (error) {
           console.log(error);
@@ -139,11 +151,15 @@ class DashboardController {
     }
   }
 
-  async delete({ request, response, view, params }) {
+  async delete({ request,auth, response, view, params }) {
+    const user = await auth.getUser()
     const id = params.id;
-    console.log(id);
-    await Vote.query().where("id_vote", id).delete();
-
+    // console.log(id);
+    // await Vote.query().where("id_vote", id).delete();
+    var vote = await Vote.find(id);
+    if (vote.creator == user.email) {
+    await vote.delete();
+    }
     // return response.route("dashboard");
   }
 

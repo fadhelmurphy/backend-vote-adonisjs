@@ -33,15 +33,15 @@ Route.post('register', 'Otentik/RegisterController.store').as('register.store').
 /**
 * dashboard
 */
-Route.group(()=>{
-    Route.get('/', 'DashboardController.index').as('dashboard'),
-    Route.post('update/:id', 'DashboardController.update').as('dashboard.update'),
-    Route.post('sendvote', 'DashboardController.sendvote').as('dashboard.sendvote'),
-    Route.get('delete/:id', 'DashboardController.delete'),
-    Route.get('get/:id', 'DashboardController.getbyid'),
-    Route.get('vote/add', 'DashboardController.addvote'),
-    Route.post('add', 'DashboardController.store').as('dashboard.store')
-}).prefix('dashboard').middleware(['Authenticate'])
+// Route.group(()=>{
+//     Route.get('/', 'DashboardController.index').as('dashboard'),
+//     Route.post('update/:id', 'DashboardController.update').as('dashboard.update'),
+//     Route.post('sendvote', 'DashboardController.sendvote').as('dashboard.sendvote'),
+//     Route.get('delete/:id', 'DashboardController.delete'),
+//     Route.get('get/:id', 'DashboardController.getbyid'),
+//     Route.get('vote/add', 'DashboardController.addvote'),
+//     Route.post('add', 'DashboardController.store').as('dashboard.store')
+// }).prefix('dashboard').middleware(['Authenticate'])
 Route.group(()=>{
     Route.get('/', 'DashboardController.getAll').as('dashboard')
     .middleware("auth");

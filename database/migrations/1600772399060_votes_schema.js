@@ -10,6 +10,7 @@ class VotesSchema extends Schema {
       table.string('id_vote', 6).notNullable()
       table.string('votename', 30)
       table.string('kandidat', 30).notNullable()
+      table.string('creator', 30)
       table.timestamps()
     })
   }

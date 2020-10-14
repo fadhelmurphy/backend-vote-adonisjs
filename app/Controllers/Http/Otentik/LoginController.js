@@ -44,9 +44,12 @@ class LoginController {
   }
   
     async show ({ auth,params, response }) {
-      const userid = await auth.user.id;
-      console.log(user)
-        const user = await User.find(userid)
+      const user = await auth.getUser()
+      // const userid = await auth.user.id;
+      // console.log(user)
+        // const user = await User.find(userid)
+        // const user = getUser
+        // console.log(user.name)
         const res = {
             name: user.name,
             email: user.email
