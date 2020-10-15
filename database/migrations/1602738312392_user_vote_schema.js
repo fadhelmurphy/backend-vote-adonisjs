@@ -7,7 +7,8 @@ class UserVotedSchema extends Schema {
   up () {
     this.create('user_votes', (table) => {
       table.increments()
-      table.string('name', 30).notNullable()
+      table.string('email', 30).notNullable()
+      table.string('candidate', 30).notNullable()
       table.string('id_vote', 6).notNullable()
       table.timestamps()
     })

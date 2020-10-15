@@ -3,7 +3,7 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
-class UserVote extends Model {
+class PrivateVote extends Model {
 }
 
-module.exports = UserVote
+module.exports = PrivateVote

@@ -1,7 +1,7 @@
 "use strict";
 
 // const User = use('App/Models/User')
-const Post = use("App/Models/Post");
+// const Post = use("App/Models/Post");
 const Vote = use("App/Models/Vote");
 const UsersVoted = use("App/Models/UsersVoted");
 const { validate } = use("Validator");
@@ -26,10 +26,8 @@ class DashboardController {
         result.push({ id_vote: vote, name });
       }
     }
-    const posts = await Post.all();
     return view.render("dashboard", {
       user: user,
-      posts: posts.toJSON(),
       votes: result,
     });
   }
@@ -37,7 +35,7 @@ class DashboardController {
     // const user = await auth.user.toJSON();
     // const vote = await Vote.query().where('id_vote', '886817').select('votename','kandidat').fetch();
     // console.log(vote.toJSON()[1].kandidat)
-    
+
     const user = await auth.getUser()
     console.log(user.email)
     var lookup = {};
@@ -49,10 +47,9 @@ class DashboardController {
       var vote = item.id_vote;
       var creator = item.creator;
 
-      if (!(name in lookup) && !(vote in lookup) && !(creator in lookup) && creator == user.email) {
+      if (!(name in lookup) && !(vote in lookup) && creator == user.email) {
         lookup[name] = 1;
         lookup[vote] = 1;
-        lookup[creator] = 1;
         result.push({ id_vote: vote, name });
       }
     }
@@ -109,7 +106,7 @@ class DashboardController {
             if (vote.creator == user.email) {
             await vote.delete();
             }
-              
+
           }
         } catch (error) {
           console.log(error);
@@ -135,11 +132,12 @@ class DashboardController {
   async sendvote({ request, response, auth, view, params }) {
     try {
       // const Vote = new Vote();
+      const user = await auth.getUser()
       const UV = new UsersVoted();
       const { id_vote, kandidat } = request.all();
-      const name = "USERNAME";
+      const email = user.email;
       console.log(name);
-      UV.name = name;
+      UV.email = email;
       UV.id_vote = id_vote;
       UV.candidate = kandidat;
       await UV.save();
@@ -189,7 +187,7 @@ class DashboardController {
         return response.redirect("back");
       }
 
-      const post = new Post();
+      // const post = new Post();
 
       post.title = request.input("title");
       post.content = request.input("content");

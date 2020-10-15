@@ -43,17 +43,17 @@ Route.post('register', 'Otentik/RegisterController.store').as('register.store').
 //     Route.post('add', 'DashboardController.store').as('dashboard.store')
 // }).prefix('dashboard').middleware(['Authenticate'])
 Route.group(()=>{
-    Route.get('/', 'DashboardController.getAll').as('dashboard')
+    Route.get('/', 'Dashboard/DashboardController.getAll').as('dashboard')
     .middleware("auth");
-    Route.post('update', 'DashboardController.update').as('dashboard.update')
+    Route.post('update', 'Dashboard/DashboardController.update')
     .middleware("auth");
-    Route.post('sendvote', 'DashboardController.sendvote').as('dashboard.sendvote')
+    Route.post('sendvote', 'Dashboard/DashboardController.sendvote')
     .middleware("auth");
-    Route.get('delete/:id', 'DashboardController.delete')
+    Route.get('delete/:id', 'Dashboard/DashboardController.delete')
     .middleware("auth");
-    Route.get('get/:id', 'DashboardController.getbyid')
+    Route.get('get/:id', 'Dashboard/DashboardController.getbyid')
     .middleware("auth");
-    Route.post('add', 'DashboardController.addvote')
+    Route.post('add', 'Dashboard/DashboardController.addvote')
     // Route.get('login', 'Otentik/LoginController.index')
     // .middleware(['RedirectIfAuthenticated'])
     Route.post('login', 'Otentik/LoginController.check')
