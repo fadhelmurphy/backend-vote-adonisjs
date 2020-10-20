@@ -5,17 +5,19 @@ const Schema = use('Schema')
 
 class PrivateVoteSchema extends Schema {
   up () {
-    this.create('private_votes', (table) => {
+    this.create('vote_links', (table) => {
       table.increments()
       table.string('id_url', 6).notNullable()
+      table.string('email', 254).notNullable()
       table.string('id_vote', 6).notNullable()
       table.string('votename', 30)
+      table.string('status', 7)
       table.timestamps()
     })
   }
 
   down () {
-    this.drop('private_votes')
+    this.drop('vote_links')
   }
 }
 

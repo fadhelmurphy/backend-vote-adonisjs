@@ -51,9 +51,18 @@ Route.group(()=>{
     .middleware("auth");
     Route.get('delete/:id', 'Dashboard/DashboardController.delete')
     .middleware("auth");
+    Route.post('bulkdelete', 'Dashboard/DashboardController.bulkdelete')
+    .middleware("auth");
     Route.get('get/:id', 'Dashboard/DashboardController.getbyid')
     .middleware("auth");
     Route.post('add', 'Dashboard/DashboardController.addvote')
+    .middleware("auth");
+    Route.post('generate/private', 'GenerateController.private')
+    .middleware("auth");
+    Route.post('generate/public', 'GenerateController.public')
+    .middleware("auth");
+    Route.post('show/priv8', 'GenerateController.showPriv8')
+    .middleware("auth");
     // Route.get('login', 'Otentik/LoginController.index')
     // .middleware(['RedirectIfAuthenticated'])
     Route.post('login', 'Otentik/LoginController.check')

@@ -132,16 +132,20 @@ class DashboardController {
   async sendvote({ request, response, auth, view, params }) {
     try {
       // const Vote = new Vote();
-      const user = await auth.getUser()
-      const UV = new UsersVoted();
       const { id_vote, kandidat } = request.all();
-      const email = user.email;
-      console.log(name);
-      UV.email = email;
+      const user = await auth.getUser()
+      const check = await UsersVoted.query().select("email")
+    .where("id_vote", id_vote)
+    .where("email",user.email).fetch()
+    const UV = new UsersVoted()
+    if (check.rows.length === 0) {
+      console.log(check)
+      UV.email = user.email;
       UV.id_vote = id_vote;
       UV.candidate = kandidat;
-      await UV.save();
-      return response.json({ messages: "berhasil" });
+        await UV.save();
+        return response.json({ messages: "berhasil" });
+    }
       // return response.redirect('back')
     } catch (error) {
       console.log(error);
@@ -153,10 +157,27 @@ class DashboardController {
     const user = await auth.getUser()
     const id = params.id;
     // console.log(id);
-    // await Vote.query().where("id_vote", id).delete();
-    var vote = await Vote.find(id);
-    if (vote.creator == user.email) {
-    await vote.delete();
+    var vote = await Vote.query()
+    .where("id_vote", id)
+    .where("creator",user.email).delete();
+  }
+
+  async bulkdelete({ request,auth }) {
+    try {
+
+      const user = await auth.getUser()
+      // console.log(id);
+      const data = request.all()
+      // console.log(data)
+      for (const key in data) {
+        console.log(data[key].id_vote)
+        var vote = await Vote.query()
+        .where("id_vote", data[key].id_vote)
+        .where("creator",user.email)
+        .delete();
+      }
+    } catch (error) {
+      console.log(error)
     }
     // return response.route("dashboard");
   }
