@@ -70,7 +70,6 @@ class GenerateController {
 
       var vote = await VoteLink.query()
         .where("id_url", id)
-        .where("email", user.email)
         .select("id", "id_vote", "votename")
         .fetch();
       vote = vote.toJSON();
