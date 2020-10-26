@@ -46,14 +46,28 @@ class DashboardController {
       var name = item.votename;
       var vote = item.id_vote;
       var creator = item.creator;
-
+    // vote = vote.toJSON();
       if (!(name in lookup) && !(vote in lookup) && creator == user.email) {
         lookup[name] = 1;
         lookup[vote] = 1;
-        result.push({ id_vote: vote, name });
+
+      var VoteResults = await UsersVoted.query()
+      .where("id_vote", vote)
+      .select("candidate").fetch()
+      // .getCount("candidate")
+      // console.log(VoteResults.toJSON().length)
+      var jumlahkandidat = {}
+      VoteResults.toJSON().forEach(function(el) {
+        jumlahkandidat[el.candidate] = (jumlahkandidat[el.candidate]||0) + 1;
+      });
+      // console.log(jumlahkandidat)
+      // console.log("///////");
+        result.push({ id_vote: vote, name, jumlahkandidat });
       }
     }
-    console.log(result);
+
+    console.log(result)
+    // console.log(jumlahkandidat);
     return response.json({ votes: result });
   }
 
