@@ -3,6 +3,7 @@
 // const User = use('App/Models/User')
 // const Post = use("App/Models/Post");
 const Vote = use("App/Models/Vote");
+const VoteLink = use("App/Models/VoteLink");
 const UsersVoted = use("App/Models/UsersVoted");
 const { validate } = use("Validator");
 const { nanoid } = use("nanoid");
@@ -158,7 +159,9 @@ class DashboardController {
       UV.id_vote = id_vote;
       UV.candidate = kandidat;
         await UV.save();
-        return response.json({ messages: "berhasil" });
+        return response.json("berhasil");
+    }else{
+      return response.json("gagal")
     }
       // return response.redirect('back')
     } catch (error) {
@@ -185,6 +188,11 @@ class DashboardController {
       // console.log(data)
       for (const key in data) {
         console.log(data[key].id_vote)
+
+        var vote = await VoteLink.query()
+        .where("id_vote", data[key].id_vote)
+        .where("email",user.email)
+        .delete();
         var vote = await Vote.query()
         .where("id_vote", data[key].id_vote)
         .where("creator",user.email)
