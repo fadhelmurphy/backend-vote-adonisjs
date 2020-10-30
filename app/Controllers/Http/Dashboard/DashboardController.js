@@ -121,6 +121,10 @@ class DashboardController {
             if (vote.creator == user.email) {
             await vote.delete();
             }
+            await UsersVoted.query()
+            .where("id_vote", element.id_vote)
+            .where("candidate",element.kandidat).delete()
+
 
           }
         } catch (error) {
