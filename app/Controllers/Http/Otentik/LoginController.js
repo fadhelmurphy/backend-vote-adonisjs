@@ -2,9 +2,9 @@
 const User = use('App/Models/User');
 class LoginController {
 
-  index({ view }) {
-    return view.render('otentik.login')
-  }
+  // index({ view }) {
+  //   return view.render('otentik.login')
+  // }
 
   async check({ request, auth, session, response }) {
 
@@ -17,6 +17,7 @@ class LoginController {
      * attemp auth
      */
      const token = await auth.attempt(email, password)
+     console.log(token)
     try {
       if (token) {
         let user = await User.findBy('email', email)
@@ -42,7 +43,7 @@ class LoginController {
     await auth.logout()
     return response.route('login.index')
   }
-  
+
     async show ({ auth,params, response }) {
       const user = await auth.getUser()
       // const userid = await auth.user.id;
