@@ -92,7 +92,7 @@ class DashboardController {
       var url = item.id_url;
       var vote = item.id_vote;
     // vote = vote.toJSON();
-      if (!(url in lookup)) {
+      if (!(url in lookup)&& item.email == user.email) {
         lookup[url] = 1;
       // .getCount("candidate")
       // console.log(VoteResults.toJSON().length)
