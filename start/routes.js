@@ -63,10 +63,22 @@ Route.group(()=>{
     .middleware("auth");
     Route.post('show/priv8', 'GenerateController.showPriv8')
     .middleware("auth");
+    //Link Manager
+    Route.get('links', 'Dashboard/DashboardController.getAllLinks')
+    .middleware("auth");
+    Route.get('getlink/:id', 'Dashboard/DashboardController.getlinkbyid')
+    .middleware("auth");
+    Route.get('deletelink/:id', 'Dashboard/DashboardController.deleteLink')
+    .middleware("auth");
+    Route.post('bulkdeletelinks', 'Dashboard/DashboardController.bulkdeletelinks')
+    .middleware("auth");
     // Route.get('login', 'Otentik/LoginController.index')
     // .middleware(['RedirectIfAuthenticated'])
     Route.post('login', 'Otentik/LoginController.check')
+    Route.post('register', 'Otentik/RegisterController.storeFront')
     Route.get('getuser', 'Otentik/LoginController.show')
+    .middleware("auth");
+    Route.post('updatelink', 'Dashboard/DashboardController.updateLink')
     .middleware("auth");
     // .middleware(['RedirectIfAuthenticated'])
     Route.get('logout', 'Otentik/LoginController.logout').as('logout')

@@ -34,8 +34,6 @@ class LoginController {
       console.log(e)
       return response.json({message: 'You are not registered!'})
     }
-    // await auth.attempt(email, password)
-    // return response.route('dashboard')
 
   }
 

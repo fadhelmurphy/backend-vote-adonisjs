@@ -54,23 +54,60 @@ class DashboardController {
 
       var VoteResults = await UsersVoted.query()
       .where("id_vote", vote)
-      .select("candidate").fetch()
+      .select("candidate","email").fetch()
       // .getCount("candidate")
       // console.log(VoteResults.toJSON().length)
+      var jumlahVoters = []
       var jumlahkandidat = {}
       VoteResults.toJSON().forEach(function(el) {
         jumlahkandidat[el.candidate] = (jumlahkandidat[el.candidate]||0) + 1;
+        jumlahVoters.push({email:el.email,pilih:el.candidate})
       });
       // console.log(jumlahkandidat)
       // console.log("///////");
-        result.push({ id_vote: vote, name, jumlahkandidat });
+        result.push({ id_vote: vote, name, jumlahkandidat, jumlahVoters });
       }
     }
 
-    console.log(result)
+    // console.log(result)
+
     // console.log(jumlahkandidat);
     return response.json({ votes: result });
   }
+
+
+  async getAllLinks({ response, auth }) {
+    // const user = await auth.user.toJSON();
+    // const vote = await Vote.query().where('id_vote', '886817').select('votename','kandidat').fetch();
+    // console.log(vote.toJSON()[1].kandidat)
+
+    const user = await auth.getUser()
+    console.log(user.email)
+    var lookup = {};
+    var items = await VoteLink.all();
+    items = items.toJSON();
+    var result = [];
+    for (var item, i = 0; (item = items[i++]); ) {
+      var name = item.votename;
+      var url = item.id_url;
+      var vote = item.id_vote;
+    // vote = vote.toJSON();
+      if (!(url in lookup)) {
+        lookup[url] = 1;
+      // .getCount("candidate")
+      // console.log(VoteResults.toJSON().length)
+      // console.log(jumlahkandidat)
+      // console.log("///////");
+        result.push({ id_url: url,id_vote:vote, name:url });
+      }
+    }
+
+    // console.log(result)
+
+    // console.log(jumlahkandidat);
+    return response.json({ votes: result });
+  }
+
 
   async addvote({ auth,request }) {
     const user = await auth.getUser()
@@ -132,10 +169,49 @@ class DashboardController {
         }
       })
     );
-
-    // return response.route("dashboard");
   }
 
+  async updateLink({ auth, request, response }) {
+    const user = await auth.getUser()
+    const req = request.all().Vote;
+    console.log(req)
+    await Promise.all(
+      req.map(async (element) => {
+        try {
+          if (element.action == "tambah") {
+            var votename = await Vote.query()
+              .where("id_vote", element.id_vote)
+              .select("votename").fetch()
+              votename = votename.toJSON();
+            var vote = new VoteLink();
+            vote.id_url = element.id_url;
+            vote.id_vote = element.id_vote;
+            vote.email = user.email
+            vote.votename = votename[0]['votename'];
+            await vote.save();
+          } else if (element.action == "ubah") {
+            await VoteLink.query()
+              .where("id", element.id)
+              .update({
+                votename: element.votename,
+                id_url: element.id_url,
+                id_vote: element.id_vote,
+              });
+          } else {
+            var id = element.id;
+            var vote = await VoteLink.find(id);
+            if (vote.email == user.email) {
+            await vote.delete();
+            }
+
+
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      })
+    );
+  }
   async getbyid({ request, response, view, params }) {
     const id = params.id;
 
@@ -144,6 +220,20 @@ class DashboardController {
       .select("id", "id_vote", "votename", "kandidat")
       .fetch();
     vote = vote.toJSON();
+
+    return response.json({ vote });
+  }
+
+  async getlinkbyid({ request, response, view, params }) {
+    const id = params.id;
+    console.log(id)
+
+    var vote = await VoteLink.query()
+      .where("id_url", id)
+      .select("id","id_url", "id_vote", "votename")
+      .fetch();
+    vote = vote.toJSON();
+    console.log(vote)
 
     return response.json({ vote });
   }
@@ -183,6 +273,15 @@ class DashboardController {
     .where("creator",user.email).delete();
   }
 
+  async deleteLink({ request,auth, response, view, params }) {
+    const user = await auth.getUser()
+    const id = params.id;
+    // console.log(id);
+    var vote = await VoteLink.query()
+    .where("id_url", id)
+    .where("email",user.email).delete();
+  }
+
   async bulkdelete({ request,auth }) {
     try {
 
@@ -200,6 +299,27 @@ class DashboardController {
         var vote = await Vote.query()
         .where("id_vote", data[key].id_vote)
         .where("creator",user.email)
+        .delete();
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    // return response.route("dashboard");
+  }
+
+  async bulkdeletelinks({ request,auth }) {
+    try {
+
+      const user = await auth.getUser()
+      // console.log(id);
+      const data = request.all()
+      // console.log(data)
+      for (const key in data) {
+        console.log(data[key].id_url)
+
+        var vote = await VoteLink.query()
+        .where("id_url", data[key].id_url)
+        .where("email",user.email)
         .delete();
       }
     } catch (error) {

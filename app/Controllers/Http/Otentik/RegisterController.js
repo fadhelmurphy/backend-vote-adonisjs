@@ -9,6 +9,41 @@ class RegisterController {
     return view.render('otentik.register')
   }
 
+  async storeFront({ request, auth, response }) {
+    const { name, email, password } = request.all()
+    /**
+     * create user
+     */
+    console.log({ name, email, password })
+    const user = await User.create({
+      name,
+      email,
+      password
+    }).then(async(res)=>{
+
+      const token = await auth.attempt(email, password)
+      console.log(token)
+      try {
+        if (token) {
+          let user = await User.findBy('email', email)
+          // let token = await auth.generate(user)
+
+          // Object.assign(user, token)
+          console.log(token)
+          return response.json(token)
+        }
+      }
+      catch (e) {
+        console.log(e)
+        return response.json({message: 'Gagal membuat token'})
+      }
+    })
+    .catch(async (err) => {
+      return response.status(401).json({message: 'Anda sudah melakukan registrasi'})
+    });
+
+  }
+
   async store({ request, session, response }) {
 
     /**
